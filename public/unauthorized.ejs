@@ -1,0 +1,88 @@
+<html>
+<!--UNAUTHORIZED-->
+<head>
+    <meta charset="utf-8" />
+    <title>SolarOS 4.0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="assets/images/iconred.png">
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+    <link href="assets/css/jquery.terminal.css" rel="stylesheet"/>
+    <script src="assets/js/jquery-1.7.1.min.js"></script>
+    <script src="assets/js/jquery.mousewheel-min.js"></script>
+    <script src="assets/js/jquery.terminal.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+    <script src="mycmd.js"></script>
+</head>
+
+<body>
+
+    <script>
+
+      var term;
+
+      jQuery(function($) {
+
+        $( "#dialog-confirm" ).dialog({
+          autoOpen: false,
+          resizable: false,
+          height: "auto",
+          width: 400,
+          modal: true,
+          buttons: {
+            "< Yes >": function() {
+                $.post("/auth", function(data){
+                  window.location.reload();
+              });
+            },
+            "< No >": function() {
+              $(this).dialog("close");
+          }
+      }
+  });
+        
+
+        term = $('body').terminal(function(command, term) { //1° Level
+
+           if ((command.match(/login/i))&&(command.match(/backdoor/i))){
+
+            term.echo(loginmsg);
+
+            term.push(function(command, term) {     //2° Level
+
+                if (command.match(/login/i)){
+                    term.echo("Already logged in");
+                }else if (command.match(/lllsdlasercontrol/i)) {
+
+                    term.echo(lasermsg); 
+                    $("#dialog-confirm").dialog("open");
+
+
+                } else {
+                    generalcommands(command);
+                        //term.echo('unknown command ' + command);
+                    }
+                }, {
+                    prompt: '#> ',
+                    name: '#'
+                });
+        } else {
+            generalcommands(command);
+                //term.echo('unknown command ' + command);
+            }
+            
+        }, {
+            greetings: "SolarOS 4.0.1 Generic_50203-02 sun4m i386\nPlease, login.",
+            onBlur: function() {
+            // prevent loosing focus
+            return false;
+        }
+    });
+    });
+</script>
+
+<div id="dialog-confirm" title="Confirmation Alert: LLLSDLaserControl">
+  <h3 style="text-align: center;">Aperture Clear?</h3>
+</div>
+
+</body>
+</html>

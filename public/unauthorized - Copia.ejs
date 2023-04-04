@@ -1,0 +1,142 @@
+<html>
+<!--UNAUTHORIZED-->
+<head>
+    <meta charset="utf-8" />
+    <title>SolarOS 4.0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+    <link href="assets/css/jquery.terminal.css" rel="stylesheet"/>
+    <script src="assets/js/jquery-1.7.1.min.js"></script>
+    <script src="assets/js/jquery.mousewheel-min.js"></script>
+    <script src="assets/js/jquery.terminal.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+</head>
+
+<body>
+
+    <script>
+
+      var term;
+
+      jQuery(function($) {
+
+                $( "#dialog-confirm" ).dialog({
+                          autoOpen: false,
+                          resizable: false,
+                          height: "auto",
+                          width: 400,
+                          modal: true,
+                          buttons: {
+                            "< Yes >": function() {
+                            $.post( "/auth", function( data ) {
+                              //$( ".result" ).html( data );
+                              window.location.reload();
+                            });
+                          },
+                          "< No >": function() {
+                              $( this ).dialog( "close" );
+                          }
+                      }
+                  });
+        
+
+
+        var id = 1;
+        term = $('body').terminal(function(command, term) {
+            if (command == 'help') {
+                term.echo("MCP: No help for you, User.");
+                term.echo("END OF LINE");
+            }else if (command == 'whoami') {
+                term.echo("flynn");
+            }else if (command.match(/uname/i)) {
+                term.echo("SolarOS 4.0.1 Generic_50203-02 sun4m i386");
+            } else if (command == 'test'){
+                term.push(function(command, term) {
+                    if (command == 'help') {
+                        term.echo('if you type ping it will display pong');
+                    } else if (command == 'ping') {
+                        term.echo('pong');
+                    } else {
+                        term.echo('unknown command ' + command);
+                    }
+                }, {
+                    prompt: 'test> ',
+                    name: 'test'
+                });
+            }else if(command.match(/login/)){
+
+                 if ((command == 'login backdoor') || (command == 'login:backdoor') || (command == 'login: backdoor')){
+
+term.echo('No home directory specified in password file!');
+term.echo('Logging in with home=/');
+term.echo(`# bin/history 
+488 cd/opt/LLL/controller/laser/ 
+489 vi LLLSDLaserControl.c 
+490 make 
+491 make install 
+492 ./sanity_check 
+493 ./configure –o test.cfg 
+494 vi test.cfg 
+495 vi ~/last_will_and_testament.txt 
+496 cat /proc/meminfo
+497 ps -a -x -u
+498 kill -9 2207
+499 kill 2208
+500 ps -a -x -u
+501 touch/opt/LLL/run/ok
+502 LLLSDLaserControl -ok 1`); 
+                term.push(function(command, term) {
+
+
+                    if (command == 'whoami') {
+                        term.echo('flynn');
+                     }else if (command.match(/uname/i)) {
+                        term.echo("SolarOS 4.0.1 Generic_50203-02 sun4m i386");
+                    }else if (command == 'help') {
+                        term.echo("MCP: No help for you, User.");
+                        term.echo("END OF LINE");
+                    }else if (command.match(/lllsdlasercontrol/i)) {
+
+term.echo(`* Starting up...
+* PSU online
+* HV online
+* Analog core memory . . . OK!
+* Booting pattern reconition systems
+* Merging current data mode!
+* Starting laser emmitter
+* Particle traps test OK!
+* Entangling laser with particle traps
+>>> Confirmation Alert 
+>> Aperture Clear?`); 
+$( "#dialog-confirm" ).dialog( "open" );
+
+                    } else {
+                        term.echo('unknown command ' + command);
+                    }
+                }, {
+                    prompt: '#> ',
+                    name: '#'
+                });
+            }else{ 
+                term.echo('Login incorrect');
+            }
+            }else {
+                term.echo("unknow command " + command);
+            }
+        }, {
+            greetings: "SolarOS 4.0.1 Generic_50203-02 sun4m i386\nPlease, login.",
+            onBlur: function() {
+            // prevent loosing focus
+            return false;
+        }
+    });
+});
+
+</script>
+
+<div id="dialog-confirm" title="Confirmation Alert: LLLSDLaserControl">
+  <h3 style="text-align: center;">Aperture Clear?</h3>
+</div>
+
+</body>
+</html>
